@@ -136,4 +136,32 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && ln -sf /dev/stdout /var/log/nginx/access.log \
   && ln -sf /dev/stderr /var/log/nginx/error.log
 
+RUN apk add --no-cache --virtual .build-deps \
+    gcc \
+    libc-dev \
+    make \
+    openssl-dev \
+    pcre-dev \
+    zlib-dev \
+    linux-headers \
+    curl \
+    gnupg \
+    libxslt-dev \
+    gd-dev \
+    geoip-dev \
+  && mkdir -p /tmp/src \
+  && cd /tmp/src \
+  && wget https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz \
+  && tar -zxvf nginx-${NGINX_VERSION}.tar.gz \
+  && wget http://labs.frickle.com/files/ngx_cache_purge-2.3.tar.gz \
+  && tar -zxvf ngx_cache_purge-2.3.tar.gz \
+  && cd /tmp/src/nginx-${NGINX_VERSION} \
+  && ./configure $CONFIG --add-module=/tmp/src/ngx_cache_purge-2.3 \
+  && make -j$(getconf _NPROCESSORS_ONLN) \
+  && make install \
+  && apk del build-base \
+  && apk del .gettext \
+  && rm -rf /tmp/src \
+  && rm -rf /var/cache/apk/*
+
 STOPSIGNAL SIGTERM
