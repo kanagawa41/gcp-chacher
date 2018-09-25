@@ -10,7 +10,6 @@ upstream gs {
 }
 
 server {
-    # FIXME: 環境変数で変えられるようにする
     set $my_domain "${BUCKET_NAME}";
 
     listen 80;
@@ -54,7 +53,8 @@ server {
         proxy_hide_header   accept-ranges;
         proxy_hide_header   alternate-protocol;
         proxy_hide_header      Set-Cookie;
-        proxy_ignore_headers   "Set-Cookie";
+        # オリジンから来るCache-Controlを無視する
+        proxy_ignore_headers   Cache-Control Expires Set-Cookie;
         proxy_intercept_errors on;
 
         proxy_cache            GS;

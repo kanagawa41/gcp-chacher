@@ -7,3 +7,9 @@ nginxでgcpにリバースプロキシし、ファイルをキャッシュする
 
 # start
 `$ docker-compose up`
+
+# comfirm jpg
+`http://localhost:5555/test/test_180801222701.jpg`
+
+# TODO
+* `ngx_cache_purge` をインストールしてキャッシュファイルの削除機構を実装
